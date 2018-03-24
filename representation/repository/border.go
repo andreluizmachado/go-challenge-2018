@@ -11,9 +11,9 @@ type BorderRepository struct {
 }
 
 
-func (borderRepositoy *BorderRepository) Store(border *entity.Border) int {
+func (borderRepository *BorderRepository) Store(border *entity.Border) int {
 
-	statement, err := borderRepositoy.Connection.Prepare("insert into borders(city_id, border_city) values(?, ?)")
+	statement, err := borderRepository.Connection.Prepare("insert into borders(city_id, border_city) values(?, ?)")
 
 	if err != nil {
 		log.Fatal(err)
@@ -40,15 +40,15 @@ func (borderRepository *BorderRepository) StoreList(citiId int, borderList []int
 	}	
 }
 
-func (borderRepositoy *BorderRepository) DeleteByCity(city *entity.City) int {
+func (borderRepository *BorderRepository) DeleteByCityId(cityId string) int {
 
-	statement, err := borderRepositoy.Connection.Prepare("DELETE FROM borders WHERE city_id = ?")
+	statement, err := borderRepository.Connection.Prepare("DELETE FROM borders WHERE city_id = ?")
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	result, err := statement.Exec(city.Id)
+	result, err := statement.Exec(cityId)
 
 	if err != nil {
 		log.Fatal(err)

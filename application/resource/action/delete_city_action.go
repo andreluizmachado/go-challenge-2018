@@ -8,23 +8,11 @@ import (
 	"gitlab.com/andreluizmachado/go-challenge-ac001/infrastructure"
 
 	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/repository"	
-
-	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/entity"
-
-	"strconv"
 )
 
-func UpdateCity(c echo.Context) error {
+func DeleteCity(c echo.Context) error {
 
 	cityId := c.Param("id")
-
-	city := new(entity.City)
-
-	if err := c.Bind(city); err!=nil {
-		return err
-	}
-
-	city.Id, _ = strconv.Atoi(cityId)
 
 	dbConnection := infrastructure.GetDbConnection()
 
@@ -32,15 +20,13 @@ func UpdateCity(c echo.Context) error {
 
 	borderRepository := repository.NewBorderRepository(dbConnection)
 
-	result := cityRepository.Update(city)
+	result := cityRepository.Delete(cityId)
 
 	borderRepository.DeleteByCityId(cityId)
 
-	borderRepository.StoreList(city.Id, city.Borders)
-
-	if result == false {
+	if result < 1 {
 		return c.NoContent(http.StatusNotFound)
 	}
 
-	return c.JSON(http.StatusOK, city)
+	return c.NoContent(http.StatusOK)
 }

@@ -103,6 +103,29 @@ func (cityRepositoy *CityRepository) FindById(id string) *entity.City {
 	return &entity.City{cityId, name, borders}
 }
 
+func (cityRepository *CityRepository) Delete(id string) int {
+
+	statement, err := cityRepository.Connection.Prepare("DELETE FROM cities WHERE id = ?")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	result, err := statement.Exec(id)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return int(rowsAffected)
+}
+
 func NewCityRepository(dbConnection *sql.DB) *CityRepository {
 	return &CityRepository{dbConnection}
 }

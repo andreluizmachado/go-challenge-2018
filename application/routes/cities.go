@@ -13,7 +13,7 @@ func PutCitiesRoutes(e *echo.Echo) {
 	cityGroup.GET("/:id", action.GetCity)
 	cityGroup.POST("", action.CreateCity)
 	cityGroup.PUT("/:id", action.UpdateCity)
-	cityGroup.DELETE(":id", hello)
+	cityGroup.DELETE("/:id", action.DeleteCity)
 
 
 	citiesGroup := e.Group("/cities")
