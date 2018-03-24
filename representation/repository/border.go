@@ -42,13 +42,13 @@ func (borderRepository *BorderRepository) StoreList(citiId int, borderList []int
 
 func (borderRepository *BorderRepository) DeleteByCityId(cityId string) int {
 
-	statement, err := borderRepository.Connection.Prepare("DELETE FROM borders WHERE city_id = ?")
+	statement, err := borderRepository.Connection.Prepare("DELETE FROM borders WHERE city_id = ? or border_city = ?")
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	result, err := statement.Exec(cityId)
+	result, err := statement.Exec(cityId, cityId)
 
 	if err != nil {
 		log.Fatal(err)
