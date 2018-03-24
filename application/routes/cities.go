@@ -1,8 +1,6 @@
 package routes
 
 import (
-	"net/http"
-
 	"github.com/labstack/echo"
 
 	"gitlab.com/andreluizmachado/go-challenge-ac001/application/resource/action"
@@ -17,12 +15,6 @@ func PutCitiesRoutes(e *echo.Echo) {
 
 
 	citiesGroup := e.Group("/cities")
-	citiesGroup.GET("", hello)
-	citiesGroup.DELETE("", hello)	
-}
-
-
-// Handler
-func hello(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello, World!")
+	citiesGroup.GET("", action.GetAllCities)
+	citiesGroup.DELETE("", action.DeleteAllCities)	
 }

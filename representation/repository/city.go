@@ -103,6 +103,54 @@ func (cityRepositoy *CityRepository) FindById(id string) *entity.City {
 	return &entity.City{cityId, name, borders}
 }
 
+func (cityRepositoy *CityRepository) FindAll() *entity.Cities {
+
+	statement, err := cityRepositoy.Connection.Prepare("SELECT cities.id, name, border_city FROM cities INNER JOIN borders ON borders.city_id=cities.id ORDER BY cities.id ASC")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var cities entity.Cities = entity.Cities{[]entity.City{}}
+	var city entity.City = entity.City{}
+	var currentCityId int = 0
+	var cityPosition int = -1
+
+	rows, err := statement.Query()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var borderCity int
+	    var name string
+		var id int
+
+		err = rows.Scan(&id, &name, &borderCity)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if currentCityId != id {
+			city.Id = id
+			city.Name = name
+			cities.Cities = append(cities.Cities, city)
+			currentCityId = id
+			cityPosition++
+		}
+
+		var borders []int = cities.Cities[cityPosition].Borders
+
+		cities.Cities[cityPosition].Borders = append(borders, borderCity)
+	}
+
+	return &cities
+}
+
+
 func (cityRepository *CityRepository) Delete(id string) int {
 
 	statement, err := cityRepository.Connection.Prepare("DELETE FROM cities WHERE id = ?")
@@ -112,6 +160,29 @@ func (cityRepository *CityRepository) Delete(id string) int {
 	}
 
 	result, err := statement.Exec(id)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return int(rowsAffected)
+}
+
+func (cityRepository *CityRepository) DeleteAll() int {
+
+	statement, err := cityRepository.Connection.Prepare("DELETE FROM cities")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	result, err := statement.Exec()
 
 	if err != nil {
 		log.Fatal(err)

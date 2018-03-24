@@ -28,12 +28,10 @@ func CreateCity(c echo.Context) error {
 	borderRepository := repository.NewBorderRepository(dbConnection)
 
 	citiId := cityRepository.Store(city);
-
-	for _, border := range city.Borders {
-		borderRepository.Store(&entity.Border{0, citiId, border});
-	}
-
 	city.Id = citiId;
+
+	borderRepository.StoreList(city.Id, city.Borders)
+	
 	c.Response().Header().Set("Location", "/city/" + fmt.Sprintf("%d", citiId) )
 	return c.JSON(http.StatusCreated, city)
 }

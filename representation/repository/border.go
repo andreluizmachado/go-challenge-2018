@@ -63,6 +63,29 @@ func (borderRepository *BorderRepository) DeleteByCityId(cityId string) int {
 	return int(rowsAffected)
 }
 
+func (borderRepository *BorderRepository) DeleteAll() int {
+
+	statement, err := borderRepository.Connection.Prepare("DELETE FROM borders")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	result, err := statement.Exec()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return int(rowsAffected)
+}
+
 func NewBorderRepository(dbConnection *sql.DB) *BorderRepository {
 	return &BorderRepository{dbConnection}
 }
