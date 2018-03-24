@@ -1,0 +1,21 @@
+version: '2'
+services:
+  eventgo.local:
+    image: andreluizkbca/go-challenge-ac001
+    build: ./
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/go/src/gitlab.com/andreluizmachado/go-challenge-ac001
+    working_dir: /go/src/gitlab.com/andreluizmachado/go-challenge-ac001
+    command: go run main.go
+  vendor:
+    image: instrumentisto/dep:latest
+    volumes:
+      - ./:/go/src/gitlab.com/andreluizmachado/go-challenge-ac001
+      - ~/go/pkg/dep:/go/pkg/dep
+    working_dir: /go/src/gitlab.com/andreluizmachado/go-challenge-ac001
+    environment:
+      - DEPNOLOCK=1
+    command: init
+  

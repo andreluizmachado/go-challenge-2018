@@ -1,0 +1,8 @@
+.vscode
+.env
+*.DS_Store
+debug
+vendor/*
+vendor.orig/*
+doc/output.html
+events-service
