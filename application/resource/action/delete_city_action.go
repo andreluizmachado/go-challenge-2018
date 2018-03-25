@@ -1,14 +1,14 @@
 package action
 
 import (
-	"net/http"
 	"log"
+	"net/http"
 
-	"github.com/labstack/echo"	
+	"github.com/labstack/echo"
 
 	"gitlab.com/andreluizmachado/go-challenge-ac001/infrastructure"
 
-	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/repository"	
+	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/repository"
 )
 
 func DeleteCity(c echo.Context) error {
@@ -21,7 +21,7 @@ func DeleteCity(c echo.Context) error {
 	transaction, err := dbConnection.Begin()
 	if err != nil {
 		log.Fatal(err)
-	}	
+	}
 
 	cityRepository := repository.NewCityRepository(dbConnection, transaction)
 

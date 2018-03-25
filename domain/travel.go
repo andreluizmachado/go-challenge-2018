@@ -1,8 +1,8 @@
 package domain
 
 import (
-	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/repository"
 	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/entity"
+	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/repository"
 
 	"strconv"
 )
@@ -15,20 +15,20 @@ var citiesVerified []int
 var path []int
 
 func (travel *Travel) GetPath(cityIdOrigin int, cityIdDestinate int, byFilter []string) *entity.Travel {
-	travelEntity := travel.getPathRecursively(cityIdOrigin, cityIdDestinate, byFilter)	
-	
+	travelEntity := travel.getPathRecursively(cityIdOrigin, cityIdDestinate, byFilter)
+
 	citiesVerified = []int{}
 	path = []int{}
-			
+
 	return travelEntity
 }
 
 func NewTravel(cityRepository *repository.CityRepository) *Travel {
-	return &Travel{cityRepository}	
+	return &Travel{cityRepository}
 }
 
 func (travel *Travel) getPathRecursively(cityIdOrigin int, cityIdDestinate int, byFilter []string) *entity.Travel {
-	var allCitiesVerified bool = true;
+	var allCitiesVerified bool = true
 
 	path = append(path, cityIdOrigin)
 
@@ -42,19 +42,18 @@ func (travel *Travel) getPathRecursively(cityIdOrigin int, cityIdDestinate int, 
 
 		travelEntity := &entity.Travel{path}
 
-		if (travel.hasTwoFilters(byFilter)) {
+		if travel.hasTwoFilters(byFilter) {
 			return travelEntity
 		}
 
-		if (travel.hasMoreThanThreeStops(travelEntity)) {
+		if travel.hasMoreThanThreeStops(travelEntity) {
 			return travelEntity
 		}
-		
-		
+
 		firstStop, _ := strconv.Atoi(byFilter[0])
 		secondStop, _ := strconv.Atoi(byFilter[1])
 
-		if (travel.hasDestinate(travelEntity.Path, firstStop) && travel.hasDestinate(travelEntity.Path, secondStop)) {
+		if travel.hasDestinate(travelEntity.Path, firstStop) && travel.hasDestinate(travelEntity.Path, secondStop) {
 			return travelEntity
 		}
 

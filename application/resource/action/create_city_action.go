@@ -1,25 +1,25 @@
 package action
 
 import (
-	"net/http"
 	"log"
+	"net/http"
 
 	"strconv"
 
-	"github.com/labstack/echo"	
+	"github.com/labstack/echo"
 
 	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/entity"
 
 	"gitlab.com/andreluizmachado/go-challenge-ac001/infrastructure"
 
-	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/repository"	
+	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/repository"
 )
 
 func CreateCity(c echo.Context) error {
 	city := new(entity.City)
 
-	if err := c.Bind(city); err!=nil {
-		log.Println("bind city problems");
+	if err := c.Bind(city); err != nil {
+		log.Println("bind city problems")
 		return err
 	}
 
@@ -29,20 +29,19 @@ func CreateCity(c echo.Context) error {
 	transaction, err := dbConnection.Begin()
 	if err != nil {
 		log.Fatal(err)
-	}	
+	}
 
 	cityRepository := repository.NewCityRepository(dbConnection, transaction)
 
 	borderRepository := repository.NewBorderRepository(dbConnection, transaction)
 
-
-	citiId := cityRepository.Store(city);
-	city.Id = citiId;
+	citiId := cityRepository.Store(city)
+	city.Id = citiId
 
 	borderRepository.StoreList(city.Id, city.Borders)
-	
+
 	transaction.Commit()
-	
-	c.Response().Header().Set("Location", "/city/" + strconv.Itoa(citiId) )
+
+	c.Response().Header().Set("Location", "/city/"+strconv.Itoa(citiId))
 	return c.JSON(http.StatusCreated, city)
 }

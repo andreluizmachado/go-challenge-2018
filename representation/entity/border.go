@@ -1,7 +1,7 @@
 package entity
 
 type Border struct {
-	Id int
+	Id     int
 	CityId int
 	Border int
 }

@@ -3,13 +3,13 @@ package action
 import (
 	"net/http"
 
-	"github.com/labstack/echo"	
+	"github.com/labstack/echo"
 
 	"log"
 
 	"gitlab.com/andreluizmachado/go-challenge-ac001/infrastructure"
 
-	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/repository"	
+	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/repository"
 
 	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/entity"
 
@@ -22,7 +22,7 @@ func UpdateCity(c echo.Context) error {
 
 	city := new(entity.City)
 
-	if err := c.Bind(city); err!=nil {
+	if err := c.Bind(city); err != nil {
 		return err
 	}
 

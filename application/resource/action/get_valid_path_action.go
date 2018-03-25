@@ -1,9 +1,9 @@
 package action
 
 import (
+	"log"
 	"net/http"
 	"strconv"
-	"log"
 
 	"github.com/labstack/echo"
 	"gitlab.com/andreluizmachado/go-challenge-ac001/domain"
@@ -25,7 +25,7 @@ func GetValidPath(c echo.Context) error {
 	transaction, err := dbConnection.Begin()
 	if err != nil {
 		log.Fatal(err)
-	}	
+	}
 
 	cityRepository := repository.NewCityRepository(dbConnection, transaction)
 
@@ -33,7 +33,7 @@ func GetValidPath(c echo.Context) error {
 
 	travelEntiy := travel.GetPath(cityIdOrigin, cityIdDestinate, byFilter)
 
-	if (travelEntiy == nil) {
+	if travelEntiy == nil {
 		return c.NoContent(http.StatusNotFound)
 	}
 

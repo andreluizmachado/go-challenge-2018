@@ -7,10 +7,9 @@ import (
 )
 
 type BorderRepository struct {
-	Connection *sql.DB
+	Connection  *sql.DB
 	Transaction *sql.Tx
 }
-
 
 func (borderRepository *BorderRepository) Store(border *entity.Border) int {
 
@@ -35,10 +34,10 @@ func (borderRepository *BorderRepository) Store(border *entity.Border) int {
 	return int(id)
 }
 
-func (borderRepository *BorderRepository) StoreList(citiId int, borderList []int ) {
+func (borderRepository *BorderRepository) StoreList(citiId int, borderList []int) {
 	for _, border := range borderList {
-		borderRepository.Store(&entity.Border{0, citiId, border});
-	}	
+		borderRepository.Store(&entity.Border{0, citiId, border})
+	}
 }
 
 func (borderRepository *BorderRepository) DeleteByCityId(cityId string) int {
@@ -63,7 +62,6 @@ func (borderRepository *BorderRepository) DeleteByCityId(cityId string) int {
 
 	return int(rowsAffected)
 }
-
 
 func (borderRepository *BorderRepository) DeleteByBorder(borderCity string) int {
 

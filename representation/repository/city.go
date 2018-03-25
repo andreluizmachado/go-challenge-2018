@@ -1,17 +1,16 @@
 package repository
 
 import (
-	"strconv"
 	"database/sql"
 	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/entity"
 	"log"
+	"strconv"
 )
 
 type CityRepository struct {
-	Connection *sql.DB
+	Connection  *sql.DB
 	Transaction *sql.Tx
 }
-
 
 func (cityRepositoy *CityRepository) Store(city *entity.City) int {
 
@@ -36,7 +35,6 @@ func (cityRepositoy *CityRepository) Store(city *entity.City) int {
 	return int(id)
 }
 
-
 func (cityRepositoy *CityRepository) Update(city *entity.City) bool {
 
 	statement, err := cityRepositoy.Transaction.Prepare("UPDATE cities SET name = ? WHERE id= ?")
@@ -60,7 +58,6 @@ func (cityRepositoy *CityRepository) Update(city *entity.City) bool {
 	return rowsAffected == 1
 }
 
-
 func (cityRepositoy *CityRepository) FindById(id string) *entity.City {
 
 	statement, err := cityRepositoy.Connection.Prepare("SELECT name, border_city FROM cities LEFT JOIN borders ON borders.city_id=cities.id WHERE cities.id = ?")
@@ -69,7 +66,7 @@ func (cityRepositoy *CityRepository) FindById(id string) *entity.City {
 		log.Fatal(err)
 	}
 
-    var name string
+	var name string
 	var borders []int = []int{}
 	var isResultEmpty bool = true
 
@@ -86,7 +83,7 @@ func (cityRepositoy *CityRepository) FindById(id string) *entity.City {
 		var borderCity int
 
 		rows.Scan(&name, &borderCity)
-		
+
 		if borderCity > 0 {
 			borders = append(borders, borderCity)
 		}
@@ -125,7 +122,7 @@ func (cityRepositoy *CityRepository) FindAll() *entity.Cities {
 
 	for rows.Next() {
 		var borderCity int
-	    var name string
+		var name string
 		var id int
 
 		rows.Scan(&id, &name, &borderCity)
@@ -141,13 +138,12 @@ func (cityRepositoy *CityRepository) FindAll() *entity.Cities {
 		if borderCity > 0 {
 			var borders []int = cities.Cities[cityPosition].Borders
 
-			cities.Cities[cityPosition].Borders = append(borders, borderCity)			
+			cities.Cities[cityPosition].Borders = append(borders, borderCity)
 		}
 	}
 
 	return &cities
 }
-
 
 func (cityRepository *CityRepository) Delete(id string) int {
 
