@@ -16,6 +16,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	routes.PutCitiesRoutes(e)
+	routes.PutTravelsRoutes(e)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":3000"))

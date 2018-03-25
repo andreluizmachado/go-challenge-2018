@@ -25,9 +25,5 @@ func GetAllCities(c echo.Context) error {
 
 	cities := cityRepository.FindAll()
 
-	if cities == nil {
-		return c.JSON(http.StatusOK, cities)
-	}
-
 	return c.JSON(http.StatusOK, cities)
 }

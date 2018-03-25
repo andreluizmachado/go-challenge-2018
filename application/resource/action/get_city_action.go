@@ -31,5 +31,5 @@ func GetCity(c echo.Context) error {
 		return c.NoContent(http.StatusNotFound)
 	}
 
-	return c.JSON(http.StatusOK, cityRepository.FindById(cityId))
+	return c.JSON(http.StatusOK, city)
 }
