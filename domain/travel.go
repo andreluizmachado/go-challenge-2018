@@ -1,3 +1,4 @@
+// Package domain only business rules should stay here
 package domain
 
 import (
@@ -14,6 +15,9 @@ type Travel struct {
 var citiesVerified []int
 var path []int
 
+// GetPath get a path base on a travel of the
+// city cityIdOrigin to city cityIdDestinate
+// return nil if no exists or a travel entity
 func (travel *Travel) GetPath(cityIdOrigin int, cityIdDestinate int, byFilter []string) *entity.Travel {
 	travelEntity := travel.getPathRecursively(cityIdOrigin, cityIdDestinate, byFilter)
 
@@ -23,10 +27,15 @@ func (travel *Travel) GetPath(cityIdOrigin int, cityIdDestinate int, byFilter []
 	return travelEntity
 }
 
+// NewTravel returns a instance os travel
 func NewTravel(cityRepository *repository.CityRepository) *Travel {
 	return &Travel{cityRepository}
 }
 
+// getPathRecursively get a path base on a travel of the
+// city cityIdOrigin to city cityIdDestinate
+// return nil if no exists or a travel entity
+// getPathRecursively config travels routes
 func (travel *Travel) getPathRecursively(cityIdOrigin int, cityIdDestinate int, byFilter []string) *entity.Travel {
 	var allCitiesVerified bool = true
 
@@ -79,20 +88,24 @@ func (travel *Travel) getPathRecursively(cityIdOrigin int, cityIdDestinate int, 
 	return nil
 }
 
+// removePathElements remove paths of a map based on length
 func (travel *Travel) removePathElements(length int) {
 	if len(path) >= length {
 		path = path[:len(path)-length]
 	}
 }
 
+// hasTwoFilters check if it has 2 filters
 func (travel *Travel) hasTwoFilters(byFilter []string) bool {
 	return len(byFilter) != 2
 }
 
+// hasMoreThanThreeStops check the number of stops
 func (travel *Travel) hasMoreThanThreeStops(travelEntity *entity.Travel) bool {
 	return len(travelEntity.Path) < 4
 }
 
+// hasDestinate check if the destinate exists on boder
 func (travel *Travel) hasDestinate(borders []int, cityIdDestinate int) bool {
 	for _, border := range borders {
 		if border == cityIdDestinate {

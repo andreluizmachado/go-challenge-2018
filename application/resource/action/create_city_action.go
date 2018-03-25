@@ -1,3 +1,4 @@
+// Package action all actions of api starts where
 package action
 
 import (
@@ -15,6 +16,7 @@ import (
 	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/repository"
 )
 
+// CreateCity create a city action of POST /city
 func CreateCity(c echo.Context) error {
 	city := new(entity.City)
 

@@ -1,3 +1,4 @@
+// Package action all actions of api starts where
 package action
 
 import (
@@ -16,6 +17,7 @@ import (
 	"strconv"
 )
 
+// UpdateCity update a city action of PUT /city/:id
 func UpdateCity(c echo.Context) error {
 
 	cityId := c.Param("id")

@@ -1,3 +1,4 @@
+// Package action all actions of api starts where
 package action
 
 import (
@@ -11,6 +12,7 @@ import (
 	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/repository"
 )
 
+// GetAllCities get all cities action of GET /cities
 func GetAllCities(c echo.Context) error {
 	dbConnection := infrastructure.GetDbConnection()
 	defer dbConnection.Close()

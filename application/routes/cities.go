@@ -1,3 +1,4 @@
+// Package routes this package configurate the routes of the api
 package routes
 
 import (
@@ -6,6 +7,7 @@ import (
 	"gitlab.com/andreluizmachado/go-challenge-ac001/application/resource/action"
 )
 
+// PutCitiesRoutes config cities routes
 func PutCitiesRoutes(e *echo.Echo) {
 	cityGroup := e.Group("/city")
 	cityGroup.GET("/:id", action.GetCity)

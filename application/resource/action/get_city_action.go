@@ -1,3 +1,4 @@
+// Package action all actions of api starts where
 package action
 
 import (
@@ -11,6 +12,7 @@ import (
 	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/repository"
 )
 
+// GetCity get a city action of GET /city/:id
 func GetCity(c echo.Context) error {
 
 	cityId := c.Param("id")

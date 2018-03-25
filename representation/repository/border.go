@@ -1,3 +1,4 @@
+// Package repository access data layer, transforms data into entities
 package repository
 
 import (
@@ -11,6 +12,7 @@ type BorderRepository struct {
 	Transaction *sql.Tx
 }
 
+// Store create a border
 func (borderRepository *BorderRepository) Store(border *entity.Border) int {
 
 	statement, err := borderRepository.Transaction.Prepare("insert into borders(city_id, border_city) values(?, ?)")
@@ -34,12 +36,14 @@ func (borderRepository *BorderRepository) Store(border *entity.Border) int {
 	return int(id)
 }
 
+// StoreList create a list of borders
 func (borderRepository *BorderRepository) StoreList(citiId int, borderList []int) {
 	for _, border := range borderList {
 		borderRepository.Store(&entity.Border{0, citiId, border})
 	}
 }
 
+// DeleteByCityId Delete borders by city_id table field
 func (borderRepository *BorderRepository) DeleteByCityId(cityId string) int {
 
 	statement, err := borderRepository.Transaction.Prepare("DELETE FROM borders WHERE city_id = ?")
@@ -63,6 +67,7 @@ func (borderRepository *BorderRepository) DeleteByCityId(cityId string) int {
 	return int(rowsAffected)
 }
 
+// DeleteByBorder Delete borders by border_city table field
 func (borderRepository *BorderRepository) DeleteByBorder(borderCity string) int {
 
 	statement, err := borderRepository.Transaction.Prepare("DELETE FROM borders WHERE border_city = ?")
@@ -86,6 +91,7 @@ func (borderRepository *BorderRepository) DeleteByBorder(borderCity string) int 
 	return int(rowsAffected)
 }
 
+// DeleteAll delete all Borders
 func (borderRepository *BorderRepository) DeleteAll() int {
 
 	statement, err := borderRepository.Transaction.Prepare("DELETE FROM borders")
@@ -109,6 +115,7 @@ func (borderRepository *BorderRepository) DeleteAll() int {
 	return int(rowsAffected)
 }
 
+// NewBorderRepository returns a instance of border repository
 func NewBorderRepository(dbConnection *sql.DB, transaction *sql.Tx) *BorderRepository {
 	return &BorderRepository{dbConnection, transaction}
 }

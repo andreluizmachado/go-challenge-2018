@@ -1,3 +1,4 @@
+// Package entity representation of api objects
 package entity
 
 type City struct {

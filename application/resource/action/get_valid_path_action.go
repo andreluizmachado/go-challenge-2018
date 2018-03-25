@@ -1,3 +1,4 @@
+// Package action all actions of api starts where
 package action
 
 import (
@@ -11,6 +12,8 @@ import (
 	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/repository"
 )
 
+// GetValidPath get a path base on a travel of the
+// city i to city 2, action GET /city/2/travel/1[?by=2&by=2]
 func GetValidPath(c echo.Context) error {
 
 	cityIdOrigin, _ := strconv.Atoi(c.Param("origin"))

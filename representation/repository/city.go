@@ -1,3 +1,4 @@
+// Package repository access data layer, transforms data into entities and entites into data
 package repository
 
 import (
@@ -12,6 +13,7 @@ type CityRepository struct {
 	Transaction *sql.Tx
 }
 
+// Store create a city
 func (cityRepositoy *CityRepository) Store(city *entity.City) int {
 
 	statement, err := cityRepositoy.Transaction.Prepare("insert into cities(name) values(?)")
@@ -35,6 +37,7 @@ func (cityRepositoy *CityRepository) Store(city *entity.City) int {
 	return int(id)
 }
 
+// Update update a city by id
 func (cityRepositoy *CityRepository) Update(city *entity.City) bool {
 
 	statement, err := cityRepositoy.Transaction.Prepare("UPDATE cities SET name = ? WHERE id= ?")
@@ -58,6 +61,7 @@ func (cityRepositoy *CityRepository) Update(city *entity.City) bool {
 	return rowsAffected == 1
 }
 
+// FindById return a city a your borders by id table field
 func (cityRepositoy *CityRepository) FindById(id string) *entity.City {
 
 	statement, err := cityRepositoy.Connection.Prepare("SELECT name, border_city FROM cities LEFT JOIN borders ON borders.city_id=cities.id WHERE cities.id = ?")
@@ -98,6 +102,7 @@ func (cityRepositoy *CityRepository) FindById(id string) *entity.City {
 	return &entity.City{cityId, name, borders}
 }
 
+// FindAll returns a list of cities with your borders
 func (cityRepositoy *CityRepository) FindAll() *entity.Cities {
 
 	statement, err := cityRepositoy.Connection.Prepare("SELECT cities.id, name, border_city FROM cities LEFT JOIN borders ON borders.city_id=cities.id ORDER BY cities.id ASC")
@@ -145,6 +150,7 @@ func (cityRepositoy *CityRepository) FindAll() *entity.Cities {
 	return &cities
 }
 
+// Delete delete a City by id table field
 func (cityRepository *CityRepository) Delete(id string) int {
 
 	statement, err := cityRepository.Transaction.Prepare("DELETE FROM cities WHERE id = ?")
@@ -168,6 +174,7 @@ func (cityRepository *CityRepository) Delete(id string) int {
 	return int(rowsAffected)
 }
 
+// DeleteAll delete all cities
 func (cityRepository *CityRepository) DeleteAll() int {
 
 	statement, err := cityRepository.Transaction.Prepare("DELETE FROM cities")
@@ -191,6 +198,7 @@ func (cityRepository *CityRepository) DeleteAll() int {
 	return int(rowsAffected)
 }
 
+// NewCityRepository returns a instance of city repository
 func NewCityRepository(dbConnection *sql.DB, transaction *sql.Tx) *CityRepository {
 	return &CityRepository{dbConnection, transaction}
 }

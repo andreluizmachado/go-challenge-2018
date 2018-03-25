@@ -1,3 +1,4 @@
+// Package action all actions of api starts where
 package action
 
 import (
@@ -11,6 +12,7 @@ import (
 	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/repository"
 )
 
+// DeleteAllCities delete all cities action of DELETE /cities
 func DeleteAllCities(c echo.Context) error {
 	dbConnection := infrastructure.GetDbConnection()
 	defer dbConnection.Close()
