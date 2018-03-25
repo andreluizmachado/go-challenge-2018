@@ -14,6 +14,6 @@ func GetDbConnection () *sql.DB {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	
 	return db
 }

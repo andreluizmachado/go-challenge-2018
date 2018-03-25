@@ -2,7 +2,9 @@ package action
 
 import (
 	"net/http"
-	"fmt"
+	"log"
+
+	"strconv"
 
 	"github.com/labstack/echo"	
 
@@ -17,21 +19,30 @@ func CreateCity(c echo.Context) error {
 	city := new(entity.City)
 
 	if err := c.Bind(city); err!=nil {
-		fmt.Println("bind city problems");
+		log.Println("bind city problems");
 		return err
 	}
 
 	dbConnection := infrastructure.GetDbConnection()
+	defer dbConnection.Close()
 
-	cityRepository := repository.NewCityRepository(dbConnection)
+	transaction, err := dbConnection.Begin()
+	if err != nil {
+		log.Fatal(err)
+	}	
 
-	borderRepository := repository.NewBorderRepository(dbConnection)
+	cityRepository := repository.NewCityRepository(dbConnection, transaction)
+
+	borderRepository := repository.NewBorderRepository(dbConnection, transaction)
+
 
 	citiId := cityRepository.Store(city);
 	city.Id = citiId;
 
 	borderRepository.StoreList(city.Id, city.Borders)
 	
-	c.Response().Header().Set("Location", "/city/" + fmt.Sprintf("%d", citiId) )
+	transaction.Commit()
+	
+	c.Response().Header().Set("Location", "/city/" + strconv.Itoa(citiId) )
 	return c.JSON(http.StatusCreated, city)
 }

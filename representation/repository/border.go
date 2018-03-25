@@ -8,12 +8,13 @@ import (
 
 type BorderRepository struct {
 	Connection *sql.DB
+	Transaction *sql.Tx
 }
 
 
 func (borderRepository *BorderRepository) Store(border *entity.Border) int {
 
-	statement, err := borderRepository.Connection.Prepare("insert into borders(city_id, border_city) values(?, ?)")
+	statement, err := borderRepository.Transaction.Prepare("insert into borders(city_id, border_city) values(?, ?)")
 
 	if err != nil {
 		log.Fatal(err)
@@ -42,7 +43,7 @@ func (borderRepository *BorderRepository) StoreList(citiId int, borderList []int
 
 func (borderRepository *BorderRepository) DeleteByCityId(cityId string) int {
 
-	statement, err := borderRepository.Connection.Prepare("DELETE FROM borders WHERE city_id = ? or border_city = ?")
+	statement, err := borderRepository.Transaction.Prepare("DELETE FROM borders WHERE city_id = ? or border_city = ?")
 
 	if err != nil {
 		log.Fatal(err)
@@ -65,7 +66,7 @@ func (borderRepository *BorderRepository) DeleteByCityId(cityId string) int {
 
 func (borderRepository *BorderRepository) DeleteAll() int {
 
-	statement, err := borderRepository.Connection.Prepare("DELETE FROM borders")
+	statement, err := borderRepository.Transaction.Prepare("DELETE FROM borders")
 
 	if err != nil {
 		log.Fatal(err)
@@ -86,6 +87,6 @@ func (borderRepository *BorderRepository) DeleteAll() int {
 	return int(rowsAffected)
 }
 
-func NewBorderRepository(dbConnection *sql.DB) *BorderRepository {
-	return &BorderRepository{dbConnection}
+func NewBorderRepository(dbConnection *sql.DB, transaction *sql.Tx) *BorderRepository {
+	return &BorderRepository{dbConnection, transaction}
 }

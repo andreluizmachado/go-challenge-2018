@@ -9,12 +9,13 @@ import (
 
 type CityRepository struct {
 	Connection *sql.DB
+	Transaction *sql.Tx
 }
 
 
 func (cityRepositoy *CityRepository) Store(city *entity.City) int {
 
-	statement, err := cityRepositoy.Connection.Prepare("insert into cities(name) values(?)")
+	statement, err := cityRepositoy.Transaction.Prepare("insert into cities(name) values(?)")
 
 	if err != nil {
 		log.Fatal(err)
@@ -38,7 +39,7 @@ func (cityRepositoy *CityRepository) Store(city *entity.City) int {
 
 func (cityRepositoy *CityRepository) Update(city *entity.City) bool {
 
-	statement, err := cityRepositoy.Connection.Prepare("UPDATE cities SET name = ? WHERE id= ?")
+	statement, err := cityRepositoy.Transaction.Prepare("UPDATE cities SET name = ? WHERE id= ?")
 
 	if err != nil {
 		log.Fatal(err)
@@ -153,7 +154,7 @@ func (cityRepositoy *CityRepository) FindAll() *entity.Cities {
 
 func (cityRepository *CityRepository) Delete(id string) int {
 
-	statement, err := cityRepository.Connection.Prepare("DELETE FROM cities WHERE id = ?")
+	statement, err := cityRepository.Transaction.Prepare("DELETE FROM cities WHERE id = ?")
 
 	if err != nil {
 		log.Fatal(err)
@@ -176,7 +177,7 @@ func (cityRepository *CityRepository) Delete(id string) int {
 
 func (cityRepository *CityRepository) DeleteAll() int {
 
-	statement, err := cityRepository.Connection.Prepare("DELETE FROM cities")
+	statement, err := cityRepository.Transaction.Prepare("DELETE FROM cities")
 
 	if err != nil {
 		log.Fatal(err)
@@ -197,6 +198,6 @@ func (cityRepository *CityRepository) DeleteAll() int {
 	return int(rowsAffected)
 }
 
-func NewCityRepository(dbConnection *sql.DB) *CityRepository {
-	return &CityRepository{dbConnection}
+func NewCityRepository(dbConnection *sql.DB, transaction *sql.Tx) *CityRepository {
+	return &CityRepository{dbConnection, transaction}
 }

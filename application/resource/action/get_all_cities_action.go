@@ -2,6 +2,7 @@ package action
 
 import (
 	"net/http"
+	"log"
 
 	"github.com/labstack/echo"	
 
@@ -12,8 +13,15 @@ import (
 
 func GetAllCities(c echo.Context) error {
 	dbConnection := infrastructure.GetDbConnection()
+	defer dbConnection.Close()
 
-	cityRepository := repository.NewCityRepository(dbConnection)
+	transaction, err := dbConnection.Begin()
+	if err != nil {
+		log.Fatal(err)
+	}	
+
+	cityRepository := repository.NewCityRepository(dbConnection, transaction)
+
 
 	cities := cityRepository.FindAll()
 

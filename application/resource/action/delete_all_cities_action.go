@@ -2,6 +2,7 @@ package action
 
 import (
 	"net/http"
+	"log"
 
 	"github.com/labstack/echo"	
 
@@ -12,14 +13,22 @@ import (
 
 func DeleteAllCities(c echo.Context) error {
 	dbConnection := infrastructure.GetDbConnection()
+	defer dbConnection.Close()
 
-	cityRepository := repository.NewCityRepository(dbConnection)
+	transaction, err := dbConnection.Begin()
+	if err != nil {
+		log.Fatal(err)
+	}	
 
-	borderRepository := repository.NewBorderRepository(dbConnection)
+	cityRepository := repository.NewCityRepository(dbConnection, transaction)
+
+	borderRepository := repository.NewBorderRepository(dbConnection, transaction)
 
 	cityRepository.DeleteAll()
 
 	borderRepository.DeleteAll()
+
+	transaction.Commit()
 
 	return c.NoContent(http.StatusOK)
 }

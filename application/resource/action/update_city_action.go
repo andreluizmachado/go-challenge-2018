@@ -5,6 +5,8 @@ import (
 
 	"github.com/labstack/echo"	
 
+	"log"
+
 	"gitlab.com/andreluizmachado/go-challenge-ac001/infrastructure"
 
 	"gitlab.com/andreluizmachado/go-challenge-ac001/representation/repository"	
@@ -27,10 +29,16 @@ func UpdateCity(c echo.Context) error {
 	city.Id, _ = strconv.Atoi(cityId)
 
 	dbConnection := infrastructure.GetDbConnection()
+	defer dbConnection.Close()
 
-	cityRepository := repository.NewCityRepository(dbConnection)
+	transaction, err := dbConnection.Begin()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	borderRepository := repository.NewBorderRepository(dbConnection)
+	cityRepository := repository.NewCityRepository(dbConnection, transaction)
+
+	borderRepository := repository.NewBorderRepository(dbConnection, transaction)
 
 	result := cityRepository.Update(city)
 
@@ -38,6 +46,7 @@ func UpdateCity(c echo.Context) error {
 
 	borderRepository.StoreList(city.Id, city.Borders)
 
+	transaction.Commit()
 	if result == false {
 		return c.NoContent(http.StatusNotFound)
 	}
