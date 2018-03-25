@@ -63,14 +63,14 @@ func (cityRepositoy *CityRepository) Update(city *entity.City) bool {
 
 func (cityRepositoy *CityRepository) FindById(id string) *entity.City {
 
-	statement, err := cityRepositoy.Connection.Prepare("SELECT name, border_city FROM cities INNER JOIN borders ON borders.city_id=cities.id WHERE cities.id = ?")
+	statement, err := cityRepositoy.Connection.Prepare("SELECT name, border_city FROM cities LEFT JOIN borders ON borders.city_id=cities.id WHERE cities.id = ?")
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
     var name string
-	var borders []int
+	var borders []int = []int{}
 	var isResultEmpty bool = true
 
 	rows, err := statement.Query(id)
@@ -83,16 +83,13 @@ func (cityRepositoy *CityRepository) FindById(id string) *entity.City {
 
 	for rows.Next() {
 		isResultEmpty = false
-		var borderCity string
+		var borderCity int
 
-		err = rows.Scan(&name, &borderCity)
-		if err != nil {
-			log.Fatal(err)
+		rows.Scan(&name, &borderCity)
+		
+		if borderCity > 0 {
+			borders = append(borders, borderCity)
 		}
-	
-		borderCityInt, _ := strconv.Atoi(borderCity)
-
-		borders = append(borders, borderCityInt)
 	}
 
 	if isResultEmpty {
@@ -106,7 +103,7 @@ func (cityRepositoy *CityRepository) FindById(id string) *entity.City {
 
 func (cityRepositoy *CityRepository) FindAll() *entity.Cities {
 
-	statement, err := cityRepositoy.Connection.Prepare("SELECT cities.id, name, border_city FROM cities INNER JOIN borders ON borders.city_id=cities.id ORDER BY cities.id ASC")
+	statement, err := cityRepositoy.Connection.Prepare("SELECT cities.id, name, border_city FROM cities LEFT JOIN borders ON borders.city_id=cities.id ORDER BY cities.id ASC")
 
 	if err != nil {
 		log.Fatal(err)
@@ -114,6 +111,7 @@ func (cityRepositoy *CityRepository) FindAll() *entity.Cities {
 
 	var cities entity.Cities = entity.Cities{[]entity.City{}}
 	var city entity.City = entity.City{}
+	city.Borders = []int{}
 	var currentCityId int = 0
 	var cityPosition int = -1
 
@@ -130,10 +128,7 @@ func (cityRepositoy *CityRepository) FindAll() *entity.Cities {
 	    var name string
 		var id int
 
-		err = rows.Scan(&id, &name, &borderCity)
-		if err != nil {
-			log.Fatal(err)
-		}
+		rows.Scan(&id, &name, &borderCity)
 
 		if currentCityId != id {
 			city.Id = id
@@ -143,9 +138,11 @@ func (cityRepositoy *CityRepository) FindAll() *entity.Cities {
 			cityPosition++
 		}
 
-		var borders []int = cities.Cities[cityPosition].Borders
+		if borderCity > 0 {
+			var borders []int = cities.Cities[cityPosition].Borders
 
-		cities.Cities[cityPosition].Borders = append(borders, borderCity)
+			cities.Cities[cityPosition].Borders = append(borders, borderCity)			
+		}
 	}
 
 	return &cities

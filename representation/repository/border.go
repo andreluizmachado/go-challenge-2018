@@ -43,13 +43,37 @@ func (borderRepository *BorderRepository) StoreList(citiId int, borderList []int
 
 func (borderRepository *BorderRepository) DeleteByCityId(cityId string) int {
 
-	statement, err := borderRepository.Transaction.Prepare("DELETE FROM borders WHERE city_id = ? or border_city = ?")
+	statement, err := borderRepository.Transaction.Prepare("DELETE FROM borders WHERE city_id = ?")
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	result, err := statement.Exec(cityId, cityId)
+	result, err := statement.Exec(cityId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return int(rowsAffected)
+}
+
+
+func (borderRepository *BorderRepository) DeleteByBorder(borderCity string) int {
+
+	statement, err := borderRepository.Transaction.Prepare("DELETE FROM borders WHERE border_city = ?")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	result, err := statement.Exec(borderCity)
 
 	if err != nil {
 		log.Fatal(err)

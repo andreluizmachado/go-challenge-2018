@@ -15,6 +15,8 @@ func GetValidPath(c echo.Context) error {
 
 	cityIdOrigin, _ := strconv.Atoi(c.Param("origin"))
 
+	byFilter := c.Request().URL.Query()["by"]
+
 	cityIdDestinate, _ := strconv.Atoi(c.Param("destinate"))
 
 	dbConnection := infrastructure.GetDbConnection()
@@ -29,9 +31,9 @@ func GetValidPath(c echo.Context) error {
 
 	travel := domain.NewTravel(cityRepository)
 
-	travelEntiy := travel.GetPath(cityIdOrigin, cityIdDestinate)
+	travelEntiy := travel.GetPath(cityIdOrigin, cityIdDestinate, byFilter)
 
-	if (travelEntiy.Path == nil) {
+	if (travelEntiy == nil) {
 		return c.NoContent(http.StatusNotFound)
 	}
 

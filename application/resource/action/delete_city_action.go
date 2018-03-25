@@ -30,6 +30,7 @@ func DeleteCity(c echo.Context) error {
 	result := cityRepository.Delete(cityId)
 
 	borderRepository.DeleteByCityId(cityId)
+	borderRepository.DeleteByBorder(cityId)
 
 	transaction.Commit()
 
