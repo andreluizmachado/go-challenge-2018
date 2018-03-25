@@ -1,5 +1,5 @@
 package entity
 
 type Travel struct {
-	Path []int `json:"patch"`
+	Path []int `json:"path"`
 }
