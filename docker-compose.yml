@@ -17,5 +17,5 @@ services:
     working_dir: /go/src/gitlab.com/andreluizmachado/go-challenge-ac001
     environment:
       - DEPNOLOCK=1
-    command: init
+    command: ensure
   

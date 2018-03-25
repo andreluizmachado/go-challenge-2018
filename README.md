@@ -1,83 +1,210 @@
-# citytravel - ac project
+# City Travel Api
 
-Below you will find the instructions about how to develop and create your project.
+The City Travel Api
 
-## Requirements
+## Getting Started
 
-You need to create a RESTful service to manage a list of cities and its roads. If there is a road between city A and city B, we say that **A borders B**.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-* A unique ID which will be created by your endpoint. This ID MUST be a valid integer (in the 64 bit range).
-* A name which might be duplicated
-* A list of borders cities. If A is bordered by B, a traveler can go from A to B and from B to A.
+### Prerequisites
 
-The service **MUST** listen for incomming HTTP connnections on port :3000.
+* Docker >= v17.05
+* go >= 1.10
 
-**IMPORTANT**: provde the name of the package which contains the binary which will listen on port :3000. The binary **MUST** run without any parameters. Eg.:
+### Installing
 
 ```
+git clone https://gitlab.com/andreluizmachado/go-challenge-ac001.git
+```
 
-go build my/package/with/the/binary
+```
+cd go-challenge-ac001
+```
 
+```
+./development.sh
+```
+
+### Running the binary
+
+```
 ./binary
-
 ```
 
-# Endpoints
+The service listen the 3000 port
 
-Consider that you have a map of cities with the form
+## API Resources
 
-Cities:
+### POST /city
+Resource to create a city
 
-* ID: 1 / Name: City 1 / Borders: 3
-* ID: 2 / Name: City 2 / Borders: 4
-* ID: 3 / Name: City 3 / Borders: 1, 4
-* ID: 4 / Name: City 4 / Borders: 2, 3
+Request:
+```shell
+POST http://localhost:3000/city
+Header Content-Type: application/json
 
-That data gives the following connections:
+Content-Type: application/json
+{
+    "name": "Jandira",
+    "borders": [2,3]
+}
+```
 
-1 -> 3 -> 4 -> 2
+Response:
+```shell
+Header Location /city/1
+201 Created
 
-Here you have a sample of the endpoints required:
+{
+    "id": 1,
+    "name": "Jandira",
+    "borders": [
+        2,
+        3
+    ]
+}
+```
 
-* GET /city/1 -> used to get a JSON object with the following format _{"name":"city 1","id":1,"borders":[3]}_
-* PUT /city/1 -> used to update data about the city, the input format is the same as the one used to read data about the city. As a response you MUST return the same body as _GET /city/1_
-* DELETE /city/1 -> used to delete the city. After deleted a city cannot appear as a _border_ of other city or on _path_ responses.
-* POST /city -> can be used to create a new city. The input format is _{"name":"city name","borders":[2, 3]}_. As a response you MUST return _{"name":"city name","id":4,"borders":[2, 3]}_. Also you should return the location of the created city, in the correct http header, ie, the "/city/4".
-* GET /cities -> return the list of all cities in the system. As a response you MUST return _{"cities"[{"name":"city 1","id":1,"borders":[3]}, {"name":"city 2","id":2,"borders":[4]}, ...]}_
-* DELETE /cities -> used to delete **ALL** the data (all cities and all borders)
-* GET /city/1/travel/2 -> it should return one valid path between city 1 and city 2 in the format _{"path":[1, 3, 4, 2]}_. There is no requirement to return the shortest path, as long as the response is valid. If there are no valid paths between city 1 and city 2, you should return a valid status code.
-* GET /city/1/travel/2?by=3&by=4 -> it should return one valid path between city 1 and city 2, with stops at the _by_ cities (up to 3 stops). A valid response would be _{"path":[1, 3, 4, 2]}_.
+### GET /city/:id
+Resource to take a city
 
-The endpoints need to follow the REST recommendations for HTTP verbs.
+Request:
+```shell
+GET /city/1
+Header Content-Type: application/json
+```
 
-## Evaluation
+Response
+```shell
+200 OK
+{
+    "id": 1,
+    "name": "Jandira",
+    "borders": [
+        3
+    ]
+}
+```
 
-Your code will be evaluated for correctness (all endpoints behave as specified) and for overall organization.
+Response
+```shell
+404 Not Found
+```
 
-The tests will be executed by _go test_ with _race detector_ on.
+### PUT /city/:id
+Resource to update a city
 
-You are free to use third-party libraries, but if you do, use the _dep_ to ensure reproducible builds. If you use _goroutines_ their use will be evaluated to. All tests will be executed against the _race detector_ from go.
+Request:
+```shell
+PUT /city/3
+Header Content-Type: application/json
+```
 
-For storage you can use:
+Response
+```shell
+200 OK
+{
+    "id": 3,
+    "name": "Jandira",
+    "borders": [
+        4
+    ]
+}
+```
 
-* SQLite (https://github.com/mattn/go-sqlite3 - cgo) or ql (https://github.com/cznic/ql - pure go)
-* In memory data structures
+Response
+```shell
+404 Not Found
+```
 
-Criteria:
+### DELETE /city/:id
+Resource to delete a city
 
-* Correctness is more important than completeness. Make sure that your endpoints work as expected even if you don't implement all of them.
-* Overall code quality (docs, code formatting, tests)
-* Code organization
-* Performance
+Request:
+```shell
+DELETE /city/3
+Header Content-Type: application/json
+```
 
-## Concurrency
+Response
+```shell
+200 OK
+```
 
-To measure how good your code runs the endpoints will be called under the following load:
+Response
+```shell
+404 Not Found
+```
 
-* 1 request per second against your endpoint from the same host
-* 10 request per second against your endpoint from the same host
-* 100 request per second against your endpoint from the same host
+### DELETE /cities
+Resource to delete all cities
 
-The metrics are evaluated relative to your own code. This means that we'll compare how your system changes from 1 to 100.
+Request:
+```shell
+DELETE /cities
+Header Content-Type: application/json
+```
 
-Also your _/city/1/travel/2_ endpoint need to return in under than 10 seconds for a database of 100 cities.
+Response
+```shell
+200 OK
+```
+
+### GET /cities
+Resource to get all cities
+
+Request:
+```shell
+GET /cities
+Header Content-Type: application/json
+```
+
+Response
+```shell
+200 OK
+{
+    "cities": [
+        {
+            "id": 1,
+            "name": "Jandira",
+            "borders": [
+                3
+            ]
+        }
+    ]
+}
+```
+
+
+
+### GET /city/:oirigin/travel/:destinate
+Resource to get a valid path between origin and destinate
+
+Request:
+```shell
+GET /city/2/travel/1
+Header Content-Type: application/json
+```
+
+Response
+```shell
+200 OK
+{
+    "path": [
+        2,
+        4,
+        3,
+        1
+    ]
+}
+```
+
+Response
+```shell
+404 Not Found
+```
+
+## Authors
+
+[André Luiz Machado](https://github.com/andreluizmachado)
+
