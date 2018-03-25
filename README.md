@@ -204,6 +204,10 @@ Response
 404 Not Found
 ```
 
+### Running the tests
+
+I really would like to create unit tests and integrations tests, but the time is over :(
+
 ## Authors
 
 [André Luiz Machado](https://github.com/andreluizmachado)
