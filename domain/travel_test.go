@@ -1,8 +1,12 @@
 // Package domain only business rules should stay here
 package domain
 
-func TestTravelShouldReturnValidPath() {
+import (
+	"testing"
+)
+
+func TestTravelShouldReturnValidPath(t *testing.T) {
 }
 
-func TestTravelShouldReturnNilWhenNoPathFound() {
+func TestTravelShouldReturnNilWhenNoPathFound(t *testing.T) {
 }
